@@ -1,0 +1,603 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Codex Signal Lab</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #101114;
+      --panel: #171a20;
+      --panel-2: #20252d;
+      --text: #f5f0e8;
+      --muted: #b8bec9;
+      --line: #343b46;
+      --accent: #f26d5b;
+      --accent-2: #48c7b8;
+      --accent-3: #f2c85b;
+      --good: #6fd68a;
+      --shadow: 0 24px 70px rgba(0, 0, 0, 0.32);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      background:
+        linear-gradient(140deg, rgba(242, 109, 91, 0.14), transparent 30%),
+        linear-gradient(220deg, rgba(72, 199, 184, 0.13), transparent 32%),
+        var(--bg);
+      color: var(--text);
+      letter-spacing: 0;
+      overflow-x: hidden;
+    }
+
+    button {
+      font: inherit;
+    }
+
+    .shell {
+      min-height: 100vh;
+      display: grid;
+      grid-template-rows: auto 1fr;
+    }
+
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      padding: 18px clamp(18px, 4vw, 54px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      background: rgba(16, 17, 20, 0.72);
+      backdrop-filter: blur(18px);
+      position: sticky;
+      top: 0;
+      z-index: 4;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
+      font-weight: 800;
+      letter-spacing: 0;
+    }
+
+    .brand-mark {
+      width: 38px;
+      height: 38px;
+      display: grid;
+      place-items: center;
+      border-radius: 8px;
+      background: conic-gradient(from 180deg, var(--accent), var(--accent-2), var(--accent-3), var(--accent));
+      color: #111;
+      box-shadow: 0 12px 28px rgba(242, 109, 91, 0.24);
+    }
+
+    .brand span:last-child {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .icon-button,
+    .mode-button {
+      min-height: 40px;
+      border: 1px solid rgba(255, 255, 255, 0.13);
+      color: var(--text);
+      background: rgba(255, 255, 255, 0.06);
+      border-radius: 8px;
+      cursor: pointer;
+      transition: transform 160ms ease, border-color 160ms ease, background 160ms ease;
+    }
+
+    .icon-button {
+      width: 42px;
+      display: grid;
+      place-items: center;
+    }
+
+    .mode-button {
+      padding: 0 14px;
+      font-weight: 700;
+    }
+
+    .icon-button:hover,
+    .mode-button:hover,
+    .mode-button.active {
+      transform: translateY(-1px);
+      border-color: rgba(255, 255, 255, 0.28);
+      background: rgba(255, 255, 255, 0.12);
+    }
+
+    main {
+      display: grid;
+      grid-template-columns: minmax(0, 1.05fr) minmax(320px, 0.95fr);
+      align-items: stretch;
+      gap: clamp(22px, 4vw, 46px);
+      width: min(1180px, calc(100% - 36px));
+      margin: 0 auto;
+      padding: clamp(26px, 5vw, 66px) 0 44px;
+    }
+
+    .hero {
+      min-height: 640px;
+      display: grid;
+      align-content: center;
+      gap: 26px;
+    }
+
+    h1 {
+      margin: 0;
+      max-width: 760px;
+      font-size: clamp(3.1rem, 8vw, 7.4rem);
+      line-height: 0.88;
+      letter-spacing: 0;
+    }
+
+    .lead {
+      margin: 0;
+      max-width: 620px;
+      color: var(--muted);
+      font-size: clamp(1.02rem, 2vw, 1.24rem);
+      line-height: 1.65;
+    }
+
+    .hero-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .primary {
+      border: 0;
+      min-height: 48px;
+      padding: 0 18px;
+      border-radius: 8px;
+      color: #111;
+      background: var(--accent-3);
+      font-weight: 850;
+      cursor: pointer;
+      box-shadow: 0 16px 34px rgba(242, 200, 91, 0.22);
+    }
+
+    .secondary {
+      min-height: 48px;
+      padding: 0 18px;
+      border-radius: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      color: var(--text);
+      background: transparent;
+      font-weight: 750;
+      cursor: pointer;
+    }
+
+    .metrics {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+      max-width: 680px;
+      margin-top: 10px;
+    }
+
+    .metric {
+      min-height: 104px;
+      padding: 18px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.055);
+    }
+
+    .metric strong {
+      display: block;
+      font-size: clamp(1.55rem, 4vw, 2.3rem);
+      letter-spacing: 0;
+    }
+
+    .metric span {
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    .dashboard {
+      display: grid;
+      align-content: center;
+      gap: 16px;
+      min-width: 0;
+    }
+
+    .visual {
+      position: relative;
+      min-height: 430px;
+      border-radius: 8px;
+      overflow: hidden;
+      background: #0d0f13;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      box-shadow: var(--shadow);
+    }
+
+    canvas {
+      display: block;
+      width: 100%;
+      height: 100%;
+      min-height: 430px;
+    }
+
+    .visual-label {
+      position: absolute;
+      left: 18px;
+      top: 18px;
+      right: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      pointer-events: none;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      background: rgba(13, 15, 19, 0.68);
+      color: var(--muted);
+      font-size: 0.82rem;
+      font-weight: 700;
+      backdrop-filter: blur(12px);
+      white-space: nowrap;
+    }
+
+    .dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: var(--good);
+      box-shadow: 0 0 16px var(--good);
+    }
+
+    .panel-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .panel {
+      min-height: 190px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+      background: rgba(23, 26, 32, 0.84);
+      padding: 18px;
+    }
+
+    .panel h2 {
+      margin: 0 0 16px;
+      font-size: 1rem;
+      letter-spacing: 0;
+    }
+
+    .bars {
+      display: grid;
+      gap: 11px;
+    }
+
+    .bar {
+      display: grid;
+      gap: 7px;
+    }
+
+    .bar-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      color: var(--muted);
+      font-size: 0.84rem;
+    }
+
+    .track {
+      height: 10px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.08);
+      overflow: hidden;
+    }
+
+    .fill {
+      height: 100%;
+      width: var(--value);
+      border-radius: inherit;
+      background: linear-gradient(90deg, var(--accent), var(--accent-2));
+    }
+
+    .timeline {
+      display: grid;
+      gap: 13px;
+    }
+
+    .event {
+      display: grid;
+      grid-template-columns: 12px 1fr;
+      gap: 11px;
+      color: var(--muted);
+      line-height: 1.35;
+      font-size: 0.9rem;
+    }
+
+    .event::before {
+      content: "";
+      width: 10px;
+      height: 10px;
+      margin-top: 4px;
+      border-radius: 50%;
+      background: var(--accent-2);
+    }
+
+    .event strong {
+      color: var(--text);
+    }
+
+    @media (max-width: 880px) {
+      header {
+        align-items: flex-start;
+      }
+
+      main {
+        grid-template-columns: 1fr;
+        padding-top: 34px;
+      }
+
+      .hero {
+        min-height: auto;
+      }
+
+      .metrics,
+      .panel-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 520px) {
+      header {
+        flex-direction: column;
+      }
+
+      .actions {
+        width: 100%;
+        justify-content: flex-start;
+      }
+
+      .visual-label {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <header>
+      <div class="brand" aria-label="Codex Signal Lab">
+        <span class="brand-mark" aria-hidden="true">◆</span>
+        <span>Codex Signal Lab</span>
+      </div>
+      <div class="actions" aria-label="Display modes">
+        <button class="mode-button active" data-mode="pulse">Pulse</button>
+        <button class="mode-button" data-mode="calm">Calm</button>
+        <button class="icon-button" id="shuffle" aria-label="Shuffle signal">↻</button>
+      </div>
+    </header>
+
+    <main>
+      <section class="hero" aria-labelledby="page-title">
+        <h1 id="page-title">A tiny lab for bright signals.</h1>
+        <p class="lead">
+          This single-file HTML experiment turns an empty repository into a living dashboard:
+          animated particles, changing telemetry, crisp controls, and a layout that still behaves on a phone.
+        </p>
+        <div class="hero-row">
+          <button class="primary" id="boost">Boost signal</button>
+          <button class="secondary" id="settle">Settle field</button>
+        </div>
+        <div class="metrics" aria-label="Signal metrics">
+          <div class="metric">
+            <strong id="clarity">94%</strong>
+            <span>clarity</span>
+          </div>
+          <div class="metric">
+            <strong id="velocity">1.8x</strong>
+            <span>velocity</span>
+          </div>
+          <div class="metric">
+            <strong id="sync">37ms</strong>
+            <span>sync lag</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="dashboard" aria-label="Live dashboard">
+        <div class="visual">
+          <canvas id="field" aria-label="Animated signal field"></canvas>
+          <div class="visual-label">
+            <span class="pill"><span class="dot" aria-hidden="true"></span>Live field</span>
+            <span class="pill" id="modeLabel">Pulse mode</span>
+          </div>
+        </div>
+
+        <div class="panel-grid">
+          <article class="panel">
+            <h2>Signal Mix</h2>
+            <div class="bars">
+              <div class="bar">
+                <div class="bar-top"><span>Curiosity</span><span>86</span></div>
+                <div class="track"><div class="fill" style="--value: 86%"></div></div>
+              </div>
+              <div class="bar">
+                <div class="bar-top"><span>Focus</span><span>73</span></div>
+                <div class="track"><div class="fill" style="--value: 73%"></div></div>
+              </div>
+              <div class="bar">
+                <div class="bar-top"><span>Momentum</span><span>91</span></div>
+                <div class="track"><div class="fill" style="--value: 91%"></div></div>
+              </div>
+            </div>
+          </article>
+
+          <article class="panel">
+            <h2>Activity</h2>
+            <div class="timeline">
+              <div class="event"><span><strong>01:18</strong> Repository cloned locally.</span></div>
+              <div class="event"><span><strong>Now</strong> Rich HTML experience added.</span></div>
+              <div class="event"><span><strong>Next</strong> Commit, push, or remix.</span></div>
+            </div>
+          </article>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    const canvas = document.querySelector("#field");
+    const ctx = canvas.getContext("2d");
+    const clarity = document.querySelector("#clarity");
+    const velocity = document.querySelector("#velocity");
+    const sync = document.querySelector("#sync");
+    const modeLabel = document.querySelector("#modeLabel");
+    const buttons = document.querySelectorAll("[data-mode]");
+    let mode = "pulse";
+    let energy = 1;
+    let hueShift = 0;
+    const points = Array.from({ length: 82 }, () => ({
+      x: Math.random(),
+      y: Math.random(),
+      vx: (Math.random() - 0.5) * 0.0014,
+      vy: (Math.random() - 0.5) * 0.0014,
+      r: 1.6 + Math.random() * 3.2
+    }));
+
+    function resize() {
+      const rect = canvas.getBoundingClientRect();
+      const scale = window.devicePixelRatio || 1;
+      canvas.width = Math.floor(rect.width * scale);
+      canvas.height = Math.floor(rect.height * scale);
+      ctx.setTransform(scale, 0, 0, scale, 0, 0);
+    }
+
+    function draw(time) {
+      const w = canvas.clientWidth;
+      const h = canvas.clientHeight;
+      ctx.clearRect(0, 0, w, h);
+
+      const grd = ctx.createLinearGradient(0, 0, w, h);
+      grd.addColorStop(0, "#111318");
+      grd.addColorStop(0.48, mode === "pulse" ? "#1b2028" : "#172226");
+      grd.addColorStop(1, "#0d0f13");
+      ctx.fillStyle = grd;
+      ctx.fillRect(0, 0, w, h);
+
+      const speed = mode === "pulse" ? 1.4 * energy : 0.58 * energy;
+      points.forEach((point, index) => {
+        point.x += point.vx * speed;
+        point.y += point.vy * speed;
+        if (point.x < 0 || point.x > 1) point.vx *= -1;
+        if (point.y < 0 || point.y > 1) point.vy *= -1;
+
+        const x = point.x * w;
+        const y = point.y * h;
+        const wave = Math.sin(time * 0.0015 + index) * 0.5 + 0.5;
+        ctx.beginPath();
+        ctx.fillStyle = index % 3 === 0
+          ? `rgba(242, 109, 91, ${0.34 + wave * 0.36})`
+          : index % 3 === 1
+            ? `rgba(72, 199, 184, ${0.28 + wave * 0.34})`
+            : `rgba(242, 200, 91, ${0.26 + wave * 0.32})`;
+        ctx.arc(x, y, point.r + wave * 2.2, 0, Math.PI * 2);
+        ctx.fill();
+      });
+
+      ctx.lineWidth = 1;
+      for (let i = 0; i < points.length; i += 1) {
+        for (let j = i + 1; j < points.length; j += 1) {
+          const ax = points[i].x * w;
+          const ay = points[i].y * h;
+          const bx = points[j].x * w;
+          const by = points[j].y * h;
+          const distance = Math.hypot(ax - bx, ay - by);
+          if (distance < 105) {
+            ctx.strokeStyle = `rgba(245, 240, 232, ${0.12 * (1 - distance / 105)})`;
+            ctx.beginPath();
+            ctx.moveTo(ax, ay);
+            ctx.lineTo(bx, by);
+            ctx.stroke();
+          }
+        }
+      }
+
+      const centerPulse = 44 + Math.sin(time * 0.003 + hueShift) * 18;
+      ctx.beginPath();
+      ctx.strokeStyle = mode === "pulse" ? "rgba(242, 200, 91, 0.8)" : "rgba(72, 199, 184, 0.62)";
+      ctx.lineWidth = 2;
+      ctx.arc(w * 0.5, h * 0.52, centerPulse, 0, Math.PI * 2);
+      ctx.stroke();
+
+      requestAnimationFrame(draw);
+    }
+
+    function updateMetrics() {
+      const pulse = mode === "pulse";
+      clarity.textContent = `${Math.round((pulse ? 91 : 97) + Math.random() * 4)}%`;
+      velocity.textContent = `${(pulse ? 1.6 + Math.random() * 0.6 : 0.8 + Math.random() * 0.3).toFixed(1)}x`;
+      sync.textContent = `${Math.round((pulse ? 24 : 48) + Math.random() * 20)}ms`;
+    }
+
+    buttons.forEach((button) => {
+      button.addEventListener("click", () => {
+        mode = button.dataset.mode;
+        buttons.forEach((item) => item.classList.toggle("active", item === button));
+        modeLabel.textContent = `${button.textContent} mode`;
+        updateMetrics();
+      });
+    });
+
+    document.querySelector("#boost").addEventListener("click", () => {
+      energy = Math.min(2.4, energy + 0.22);
+      updateMetrics();
+    });
+
+    document.querySelector("#settle").addEventListener("click", () => {
+      energy = Math.max(0.52, energy - 0.22);
+      updateMetrics();
+    });
+
+    document.querySelector("#shuffle").addEventListener("click", () => {
+      hueShift += 1;
+      points.forEach((point) => {
+        point.vx = (Math.random() - 0.5) * 0.002;
+        point.vy = (Math.random() - 0.5) * 0.002;
+      });
+      updateMetrics();
+    });
+
+    window.addEventListener("resize", resize);
+    resize();
+    updateMetrics();
+    requestAnimationFrame(draw);
+  </script>
+</body>
+</html>
